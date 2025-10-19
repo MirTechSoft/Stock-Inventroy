@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Old Sales Details</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<style>
+body { font-family: Arial, sans-serif; background:#f4f6fa; margin:0; }
+h1 { text-align:center; background:#007bff; color:#fff; padding:15px; }
+.container { max-width:1000px; margin:20px auto; background:#fff; padding:20px; border-radius:8px; }
+table { width:100%; border-collapse:collapse; margin-top:15px; }
+th, td { border:1px solid #ccc; padding:8px; text-align:center; }
+th { background:#007bff; color:#fff; }
+button { cursor:pointer; padding:5px 10px; border:none; border-radius:5px; }
+.show-btn { background:#17a2b8; color:#fff; margin-bottom:5px; }
+.pdf-btn { background:#ff9800; color:#fff; margin-top:8px; }
+.payment-btn { margin:0 5px; padding:5px 10px; border-radius:4px; color:#fff; opacity:0.5; }
+.pending { background:#dc3545; }
+.paid { background:#28a745; }
+.edit-btn { background:#ffc107; color:#fff; margin:0 2px; }
+.delete-btn { background:#6c757d; color:#fff; margin:0 2px; }
+.delete-sale-btn { background:#dc3545; color:#fff; margin-left:10px; }
+</style>
+</head>
+<body>
+<h1>📜 Old Sales Details</h1>
+<button onclick="window.location='index.html'" style="margin:15px; padding:8px 15px; background:#28a745; color:#fff; border:none; border-radius:5px; cursor:pointer;">⬅ Back to Admin</button>
+<button onclick="clearAllData()" style="margin:15px; padding:8px 15px; background:#dc3545; color:#fff; border:none; border-radius:5px;">🗑️ Clear All Data</button>
+<button onclick="logout()">Logout</button>
+
+<div class="container">
+  <table>
+    <thead>
+      <tr>
+        <th>Shopkeeper</th>
+        <th>Qty</th>
+        <th>Amount</th>
+        <th>Profit</th>
+        <th>Date</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody id="oldSalesTable"></tbody>
+  </table>
+</div>
+
+<script>
+const KEY_OLDSALES = "inv_oldsales";
+const KEY_CURUSER = "inv_curuser";
+const KEY_LOGGED = "inv_logged";
+
+let currentUserEmail = localStorage.getItem(KEY_CURUSER);
+let logged = localStorage.getItem(KEY_LOGGED);
+
+if (logged !== "true" || currentUserEmail !== "teapak@gmail.com") {
+  alert("❌ Access denied! Only admin can view this page.");
+  window.location = "index.html"; 
+}
+
+let oldSales = JSON.parse(localStorage.getItem(KEY_OLDSALES)) || [];
+
+oldSales.forEach(s => {
+  if(!s.payment) s.payment = { status: "pending", date: "" };
+  s.items.forEach(it => {
+    if(!it.id) it.id = Math.random().toString(36).substring(2, 9); 
+  });
+});
+
+function renderOldSales() {
+  const tbody = document.getElementById("oldSalesTable");
+  tbody.innerHTML = "";
+
+  oldSales.forEach((s, i) => {
+    let displayDate = s.date;
+    if(s.payment.status === "paid" && s.payment.date) {
+      displayDate += " | Paid: " + s.payment.date;
+    }
+
+    tbody.innerHTML += `
+      <tr style="background:#e8f0fe;">
+        <td>${s.shopkeeper}</td>
+        <td>${s.qty}</td>
+        <td>${s.amount}</td>
+        <td>${s.profit}</td>
+        <td id="saleDate${i}">${displayDate}</td>
+        <td>
+          <button onclick="toggleDetails(${i})" id="toggleBtn${i}" class="show-btn">Show</button>
+          <button class="delete-sale-btn" onclick="deleteSale(${i})">Delete Sale</button>
+        </td>
+      </tr>
+      <tr id="detailsRow${i}" style="display:none;">
+        <td colspan="6">
+          <table style="width:100%; border-collapse:collapse;">
+            <thead>
+             <tr>
+                <th>Item</th><th>Category</th><th>Qty</th><th>Price</th><th>Total</th><th>Profit</th><th>Action</th>
+             </tr>
+            </thead>
+            <tbody>
+              ${s.items.map(it => {
+                let total = (parseFloat(it.qty)||0)*(parseFloat(it.price)||0);
+                return `
+                  <tr id="itemRow${it.id}">
+                    <td>${it.name}</td>
+                    <td>${it.category || ""}</td>
+                    <td>${it.qty}</td>
+                    <td>${it.price}</td>
+                    <td>${total}</td>
+                    <td>${it.profit || 0}</td>
+                    <td>
+                      <button class="edit-btn" onclick="editItem(${i}, '${it.id}')">Edit</button>
+                      <button class="delete-btn" onclick="deleteItem(${i}, '${it.id}')">Delete</button>
+                    </td>
+                  </tr>
+                `;
+              }).join("")}
+            </tbody>
+          </table>
+          <div style="margin-top:8px;">
+            <button class="payment-btn pending" id="pendingBtn${i}" onclick="setPayment(${i}, 'pending')" ${s.payment.status==='paid'?'disabled style="opacity:0.5;background:#dc3545;"':''}>Pending</button>
+            <button class="payment-btn paid" id="paidBtn${i}" onclick="setPayment(${i}, 'paid')">Paid</button>
+          </div>
+          <button class="pdf-btn" onclick="exportPDF(${i})">📄 Export to PDF</button>
+        </td>
+      </tr>
+    `;
+    updatePaymentUI(i);
+  });
+
+  saveOldSales();
+}
+
+function toggleDetails(i) {
+  let row = document.getElementById("detailsRow" + i);
+  let btn = document.getElementById("toggleBtn" + i);
+  if (row.style.display === "none") {
+    row.style.display = "table-row";
+    btn.innerText = "Hide";
+  } else {
+    row.style.display = "none";
+    btn.innerText = "Show";
+  }
+}
+
+function deleteSale(index) {
+  if(confirm("Are you sure you want to delete this sale? This will remove all items!")){
+    oldSales.splice(index,1);
+    renderOldSales();
+  }
+}
+
+function setPayment(index, status) {
+  oldSales[index].payment.status = status;
+  if(status === "paid") {
+    let now = new Date();
+    oldSales[index].payment.date = now.toLocaleDateString() + " " + now.toLocaleTimeString();
+  } else {
+    oldSales[index].payment.date = "";
+  }
+  updatePaymentUI(index);
+  renderOldSales();
+}
+
+function updatePaymentUI(index) {
+  let pendingBtn = document.getElementById("pendingBtn" + index);
+  let paidBtn = document.getElementById("paidBtn" + index);
+  if(!pendingBtn || !paidBtn) return;
+
+  if(oldSales[index].payment.status==='paid'){
+    paidBtn.style.background="#28a745"; paidBtn.style.opacity=1;
+    pendingBtn.style.background="#dc3545"; pendingBtn.style.opacity=0.5; pendingBtn.disabled=true; 
+  } else {
+    pendingBtn.style.background="#dc3545"; pendingBtn.style.opacity=1; pendingBtn.disabled=false;
+    paidBtn.style.background="#6c757d"; paidBtn.style.opacity=0.5;
+  }
+}
+
+function editItem(saleIndex, itemId){
+  let item = oldSales[saleIndex].items.find(it=>it.id===itemId);
+  if(!item) return;
+  let newName = prompt("Edit Item Name:", item.name);
+  let newQty = prompt("Edit Qty:", item.qty);
+  let newPrice = prompt("Edit Price:", item.price);
+  let newProfit = prompt("Edit Profit:", item.profit);
+  if(newName!==null) item.name=newName;
+  if(newQty!==null) item.qty=newQty;
+  if(newPrice!==null) item.price=newPrice;
+  if(newProfit!==null) item.profit=newProfit;
+  renderOldSales();
+}
+
+function deleteItem(saleIndex, itemId){
+  if(confirm("Are you sure you want to delete this item?")){
+    oldSales[saleIndex].items = oldSales[saleIndex].items.filter(it=>it.id!==itemId);
+    renderOldSales();
+  }
+}
+
+function exportPDF(index){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+  let sale = oldSales[index];
+  doc.setFontSize(16);
+  doc.text("Tea Shop - Old Sales Record",14,20);
+  doc.setFontSize(12);
+  let displayDate = sale.date;
+  if(sale.payment.status==='paid' && sale.payment.date) displayDate += " | Paid: "+sale.payment.date;
+  doc.text(`Shopkeeper: ${sale.shopkeeper}`,14,30);
+  doc.text(`Date: ${displayDate}`,14,38);
+  doc.text(`Total Qty: ${sale.qty}`,14,46);
+  doc.text(`Amount: ${sale.amount}`,14,54);
+  let tableData = sale.items.map(it=>{
+    let total=(parseFloat(it.qty)||0)*(parseFloat(it.price)||0);
+    return [it.name,it.category||"",it.qty,it.price,total,it.profit||0];
+  });
+  doc.autoTable({startY:65,head:[["Item","Category","Qty","Price","Total","Profit"]],body:tableData});
+  doc.save(`Sale_${sale.shopkeeper}_${sale.date}.pdf`);
+}
+
+function clearAllData(){
+  if(confirm("⚠️ Are you sure? This will delete all stored data!")){
+    localStorage.removeItem(KEY_OLDSALES);
+    alert("All old sales data removed successfully!");
+    location.reload();
+  }
+}
+
+function logout(){
+  localStorage.setItem(KEY_LOGGED,"false");
+  localStorage.removeItem(KEY_CURUSER);
+  window.location="index.html";
+}
+
+function saveOldSales(){ localStorage.setItem(KEY_OLDSALES,JSON.stringify(oldSales)); }
+renderOldSales();
+</script>
+</body>
+</html>

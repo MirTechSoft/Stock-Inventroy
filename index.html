@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="image/stock-300.png">
+<title>stock_300</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body { font-family: 'Segoe UI', Tahoma, sans-serif; margin:0; background:#f4f6fa; }
+h1 { text-align:center; padding:20px; margin:0; color:#fff; background:#007bff; font-size:1.8em; }
+.container { max-width:1200px; margin:20px auto; padding:10px; }
+.section { background:#fff; margin-top:20px; padding:20px; border-radius:12px; box-shadow:0 4px 12px rgba(0,0,0,0.08); }
+h2 { margin-bottom:15px; color:#007bff; font-size:1.3em; }
+table { width:100%; border-collapse:collapse; margin-top:12px; background:#fff; border-radius:8px; overflow:hidden; }
+th, td { padding:10px; border-bottom:1px solid #e0e0e0; text-align:center; font-size:13px; }
+th { background:#007bff; color:#fff; font-size:14px; }
+tr:hover { background:#f9f9f9; }
+.btn { padding:6px 10px; border:none; border-radius:6px; cursor:pointer; font-size:13px; transition:0.3s; }
+.btn-success { background:#28a745; color:#fff; }
+.btn-danger { background:#dc3545; color:#fff; }
+.btn-warning { background:#ffc107; color:#111; }
+.btn-info { background:#17a2b8; color:#fff; }
+.btn-edit { background:#007bff; color:#fff; }
+.btn:hover { opacity:0.85; }
+.hidden { display:none; }
+.login-box { max-width:420px; margin:60px auto; background:#fff; padding:20px; border-radius:12px; box-shadow:0 6px 18px rgba(0,0,0,0.08); }
+input, select, textarea { padding:8px; margin:6px 0; border-radius:6px; border:1px solid #ccc; width:100%; box-sizing:border-box; font-size:14px; }
+textarea { resize: vertical; height:60px; }
+.top-bar { text-align:right; margin-bottom:10px; display:flex; flex-wrap:wrap; justify-content:flex-end; gap:6px; }
+.top-bar button { margin:0; }
+.section { overflow-x:auto; }
+.voice-controls { display:flex; gap:8px; align-items:center; flex-wrap:wrap; margin-top:8px; }
+.voice-list { margin-top:12px; }
+.voice-item { padding:8px; border:1px solid #e6e6e6; border-radius:8px; margin-bottom:8px; background:#fafafa; }
+@media (max-width:600px) {
+  .btn { width:100%; display:block; }
+  td .btn { margin-bottom:6px; }
+  th, td { font-size:12px; padding:6px; }
+  td { display:block; text-align:left; }
+  td:last-child { display:flex; flex-direction:column; gap:5px; }
+  h1 { font-size:1.4em; padding:12px; }
+  h2 { font-size:1.1em; }
+}
+.section table {
+  width:100%;
+  border-collapse:collapse;
+  margin-top:12px;
+  background:#fff;
+  border-radius:8px;
+  overflow:hidden;
+}
+
+.section table thead, .section table tbody {
+  display:table;
+  width:100%;
+  table-layout:fixed;
+}
+
+.section {
+  overflow-x:auto;  
+}
+
+.btn {
+  padding:6px 10px;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+  font-size:13px;
+  transition:0.3s;
+  margin:3px 2px;
+  white-space:nowrap;  
+}
+
+@media (max-width:600px) {
+  .btn {
+    width:100%;       
+    display:block;
+  }
+  
+  td .btn {
+    margin-bottom:6px; 
+  }
+}
+
+@media (max-width:600px) {
+  th, td {
+    font-size:12px;
+    padding:6px;
+  }
+}
+
+@media (max-width:600px) {
+  td {
+    display:block;
+    text-align:left;
+  }
+  td:last-child {
+    display:flex;
+    flex-direction:column; 
+    gap:5px;
+  }
+}
+
+input, select, textarea {
+  width:100%;
+  margin:6px 0;
+}
+
+.btn {
+  width:auto;
+  min-width:90px;
+  margin:3px 0;
+}
+
+@media (max-width:600px) {
+  .btn { 
+    width:100%; 
+    display:block; 
+  }
+}
+
+.top-bar {
+  text-align:right; 
+  margin-bottom:10px; 
+  display:flex; 
+  flex-wrap:wrap; 
+  justify-content:flex-end; 
+  gap:6px;
+}
+
+@media (max-width:600px) {
+  .top-bar { justify-content:center; }
+}
+
+@media (max-width:600px) {
+  h1 { font-size:1.4em; padding:12px; }
+  h2 { font-size:1.1em; }
+  th, td { font-size:12px; padding:6px; }
+  input, select, textarea { font-size:13px; }
+}
+</style>
+
+</head>
+<body>
+<h1>📦 Inventory Management</h1>
+<div class="container">
+
+<div id="loginScreen" class="login-box">
+  <h2 style="text-align:center; color:#007bff;">Login</h2>
+  <label>Email</label>
+  <input id="loginEmail" type="email" placeholder="Enter Gmail">
+  <label>Password</label>
+  <div style="position:relative;">
+    <input id="loginPass" type="password" placeholder="Enter password">
+    <button type="button" onclick="togglePass('loginPass', this)" 
+      style="position:absolute; right:8px; top:50%; transform:translateY(-50%); border:none; background:none; cursor:pointer;">👁️</button>
+  </div>
+  <div style="margin-top:10px; text-align:center;">
+    <button class="btn btn-success" onclick="attemptLogin()">Login</button>
+  </div>
+  <div style="margin-top:8px; text-align:center;">
+    <button class="btn btn-info" onclick="showRegister()">Register New Shopkeeper</button>
+  </div>
+</div>
+
+
+<div id="registerScreen" class="login-box hidden">
+  <h2 style="text-align:center; color:#28a745;">Register</h2>
+  <label>Email</label>
+  <input id="regEmail" type="email" placeholder="Enter Gmail">
+  <label>Password</label>
+  <div style="position:relative;">
+    <input id="regPass" type="password" placeholder="Enter password">
+    <button type="button" onclick="togglePass('regPass', this)" 
+      style="position:absolute; right:8px; top:50%; transform:translateY(-50%); border:none; background:none; cursor:pointer;">👁️</button>
+  </div>
+  <div style="margin-top:10px; text-align:center;">
+    <button class="btn btn-success" onclick="registerUser()">Register</button>
+    <button class="btn btn-warning" onclick="showLogin()">Back to Login</button>
+  </div>
+</div>
+
+
+<div id="app" class="hidden">
+  <div class="top-bar">
+    <button class="btn btn-info" onclick="window.location='oldDetails.html'" id="oldDetailsBtn">📜 Old Details</button>
+    <button class="btn btn-danger" onclick="logout()">Logout</button>
+  </div>
+  
+
+  <div id="adminSections" class="hidden">
+
+    <div class="section">
+      <h2>Inventory</h2>
+      <select id="mainCategory">
+        <option value="Dana">Dana</option>
+        <option value="F.Mixture">F.Mixture</option>
+        <option value="Tezdam">Tezdam</option>
+      </select>
+
+      <input id="subItemName" placeholder="Sub Item name">
+      <input id="subItemStock" type="number" min="0" placeholder="Stock">
+      <input id="subBuyPrice" type="number" min="0" step="0.01" placeholder="Buy price">
+      <input id="subSalePrice" type="number" min="0" step="0.01" placeholder="Sale price">
+      <button class="btn btn-success" onclick="saveSubItem()">Save Sub Item</button>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Category</th>
+            <th>Name</th>
+            <th>Stock</th>
+            <th>Buy</th>
+            <th>Sale</th>
+            <th>Total Amount</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="itemsTable"></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Sales</h2>
+      <select id="saleMainItem" onchange="updateSubItems()">
+        <option value="">Select Category</option>
+        <option value="Dana">Dana</option>
+        <option value="F.Mixture">F.Mixture</option>
+        <option value="Tezdam">Tezdam</option>
+      </select>
+
+      <label>Sub Item</label>
+      <select id="saleSubItem">
+        <option value="">Select Sub Item</option>
+      </select>
+
+      <input id="saleShopkeeper" placeholder="Shopkeeper">
+      <input id="saleQty" type="number" min="1" placeholder="Quantity">
+      <button class="btn btn-success" onclick="recordSale()">Record Sale</button>
+
+      <table>
+        <thead>
+          <tr><th>Item</th><th>Shopkeeper</th><th>Qty</th><th>Sale Price</th><th>Amount</th><th>Profit</th><th>Date</th><th>Actions</th></tr>
+        </thead>
+        <tbody id="salesTable"></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>User Orders</h2>
+      <table>
+        <thead><tr><th>Shopkeeper</th><th>Message</th><th>Status</th><th>Date</th><th>Admin Message</th><th>Actions</th></tr></thead>
+        <tbody id="ordersTable"></tbody>
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Voice Messages (Inbox)</h2>
+      <div id="voicesAreaAdmin" class="voice-list"></div>
+    </div>
+  </div>
+
+  <div id="userSections" class="hidden">
+    <div class="section">
+      <h2>Place Order</h2>
+      <textarea id="orderMessage" placeholder="Type your order here"></textarea>
+      <button class="btn btn-success" onclick="placeOrder()">Send Order</button>
+      <h3 style="margin-top:15px;">Your Orders</h3>
+      <table>
+        <thead><tr><th>Message</th><th>Status</th><th>Date</th><th>Admin Message</th><th>Actions</th></tr></thead>
+        <tbody id="userOrdersTable"></tbody>
+      </table>
+    </div>
+
+<div class="section">
+  <h2>Send Voice to Admin</h2>
+  <label>Name (required):</label>
+  <input id="userNameInput" placeholder="Enter your name">
+
+  <div style="margin-top:15px; text-align:center;">
+    <button id="recordBtn" 
+            style="width:60px; height:60px; border-radius:50%; background:#007bff; color:#fff; font-size:28px; border:none; cursor:pointer;">
+      🎤
+    </button>
+    <div id="recStatus" style="margin-top:8px; font-size:13px; color:#555;"></div>
+  </div>
+
+  <div id="voicesAreaUser" class="voice-list" style="margin-top:12px;"></div>
+</div>
+
+<script>
+
+function safeGet(key){
+  try {
+    const raw = localStorage.getItem(key);
+    if(!raw) return [];
+    const parsed = JSON.parse(raw);
+    return parsed || [];
+  } catch(e){
+    console.warn("safeGet parse error for", key, e);
+    return [];
+  }
+}
+function safeSet(key, value){
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch(e){
+    console.error("safeSet error", key, e);
+  }
+}
+
+const KEY_OLDSALES = "inv_oldsales";
+const KEY_USERS = "inv_users";
+const KEY_CURUSER = "inv_curuser";
+const KEY_LOGGED = "inv_logged";
+const KEY_ITEMS = "inv_items";
+const KEY_SALES = "inv_sales";
+const KEY_RETURNS = "inv_returns";
+const KEY_ORDERS = "inv_orders";
+const KEY_VOICES = "inv_voices"; 
+
+let users = safeGet(KEY_USERS);
+let items = safeGet(KEY_ITEMS);
+let sales = safeGet(KEY_SALES);
+let returnsArr = safeGet(KEY_RETURNS);
+let orders = safeGet(KEY_ORDERS);
+let oldSales = safeGet(KEY_OLDSALES);
+let voices = safeGet(KEY_VOICES); 
+
+let currentUser = null;
+
+function attemptLogin(){
+  const email = document.getElementById("loginEmail").value.trim();
+  const pass = document.getElementById("loginPass").value;
+  if(email==="teapak@gmail.com" && pass==="A*d*.ij*202*"){
+    currentUser = {email, pass, role:"admin"};
+    safeSet(KEY_LOGGED, true);
+    localStorage.setItem(KEY_CURUSER, email);
+    showApp();
+    return;
+  }
+  const u = users.find(x => x.email === email && x.pass === pass);
+  if(!u){ alert("Invalid login"); return; }
+  currentUser = u;
+  safeSet(KEY_LOGGED, true);
+  localStorage.setItem(KEY_CURUSER, email);
+  showApp();
+}
+function registerUser(){
+  const email = document.getElementById("regEmail").value.trim();
+  const pass = document.getElementById("regPass").value;
+  if(!email.endsWith("@gmail.com")) return alert("Use Gmail");
+  if(users.find(u => u.email === email)) return alert("Already exists");
+  if(email==="teapak@gmail.com") return alert("This email is reserved for Admin!");
+  users.push({email, pass, role:"user"});
+  safeSet(KEY_USERS, users);
+  alert("Registered!");
+  showLogin();
+}
+function togglePass(id, btn){
+  const input = document.getElementById(id);
+  if(input.type === "password"){ input.type = "text"; btn.textContent = "🙈"; }
+  else { input.type = "password"; btn.textContent = "👁️"; }
+}
+function showLogin(){ document.getElementById("loginScreen").classList.remove("hidden"); document.getElementById("registerScreen").classList.add("hidden"); document.getElementById("app").classList.add("hidden"); }
+function showRegister(){ document.getElementById("loginScreen").classList.add("hidden"); document.getElementById("registerScreen").classList.remove("hidden"); document.getElementById("app").classList.add("hidden"); }
+function logout(){ safeSet(KEY_LOGGED, false); localStorage.removeItem(KEY_CURUSER); currentUser = null; showLogin(); }
+
+function showApp(){
+  document.getElementById("loginScreen").classList.add("hidden");
+  document.getElementById("registerScreen").classList.add("hidden");
+  document.getElementById("app").classList.remove("hidden");
+
+  if(!currentUser){
+    const email = localStorage.getItem(KEY_CURUSER);
+    if(email === "teapak@gmail.com") currentUser = {email:"teapak@gmail.com", role:"admin"};
+    else currentUser = users.find(u => u.email === email) || null;
+  }
+  if(!currentUser){ showLogin(); return; }
+
+  if(currentUser.role === "admin"){
+    document.getElementById("adminSections").classList.remove("hidden");
+    document.getElementById("userSections").classList.add("hidden");
+    document.getElementById("oldDetailsBtn").style.display = "inline";
+  } else {
+    document.getElementById("userSections").classList.remove("hidden");
+    document.getElementById("adminSections").classList.add("hidden");
+    document.getElementById("oldDetailsBtn").style.display = "none";
+  }
+
+  renderAll();
+}
+
+function saveSubItem(){
+  const cat = document.getElementById("mainCategory").value;
+  const n = document.getElementById("subItemName").value.trim();
+  const s = +document.getElementById("subItemStock").value;
+  const b = +document.getElementById("subBuyPrice").value;
+  const sp = +document.getElementById("subSalePrice").value;
+  if(!n || isNaN(s) || isNaN(b) || isNaN(sp) ) return alert("Fill all fields");
+  const d = new Date().toLocaleDateString("en-GB");
+  items.push({ category: cat, name: n, stock: s, buyPrice: b, salePrice: sp, date: d });
+  safeSet(KEY_ITEMS, items);
+  document.getElementById("subItemName").value = "";
+  document.getElementById("subItemStock").value = "";
+  document.getElementById("subBuyPrice").value = "";
+  document.getElementById("subSalePrice").value = "";
+  renderItems();
+  updateSubItems(); 
+}
+
+
+function renderItems(){
+  const tbody = document.getElementById("itemsTable");
+  tbody.innerHTML = "";
+  const categories = ["Dana","F.Mixture","Tezdam"];
+  categories.forEach((cat, catIndex) => {
+    tbody.insertAdjacentHTML("beforeend", `<tr style="background:#f0f8ff; font-weight:bold;">
+      <td colspan="7">${cat}</td>
+      <td>
+        <button class="btn btn-info" onclick="toggleCategory(${catIndex})" id="catBtn${catIndex}">Show</button>
+      </td>
+    </tr>`);
+    items.forEach((it, i) => {
+      if(it.category !== cat) return;
+      tbody.insertAdjacentHTML("beforeend", `
+        <tr class="catRow cat-${catIndex}" style="display:none;">
+          <td>${it.category}</td>
+          <td>${it.name}</td>
+          <td>${it.stock}</td>
+          <td>${it.buyPrice}</td>
+          <td>${it.salePrice}</td>
+          <td>${(it.stock * it.buyPrice).toFixed(2)}</td>
+          <td>${it.date}</td>
+          <td>
+            <button class="btn btn-edit" onclick="editSubItem(${i})">Edit</button>
+            <button class="btn btn-danger" onclick="deleteSubItem(${i})">Delete</button>
+          </td>
+        </tr>
+      `);
+    });
+  });
+}
+function editSubItem(index){
+  const it = items[index];
+  const n = prompt("Edit Item Name:", it.name); if(n===null) return;
+  const s = prompt("Edit Stock:", it.stock); if(s===null) return;
+  const b = prompt("Edit Buy Price:", it.buyPrice); if(b===null) return;
+  const sp = prompt("Edit Sale Price:", it.salePrice); if(sp===null) return;
+  it.name = n.trim();
+  it.stock = +s;
+  it.buyPrice = +b;
+  it.salePrice = +sp;
+  safeSet(KEY_ITEMS, items);
+  renderItems();
+  updateSubItems();
+}
+function deleteSubItem(index){
+  if(!confirm("Delete this sub-item?")) return;
+  items.splice(index,1);
+  safeSet(KEY_ITEMS, items);
+  renderItems();
+  updateSubItems();
+}
+function toggleCategory(catIndex){
+  const rows = document.querySelectorAll(".cat-" + catIndex);
+  const btn = document.getElementById("catBtn" + catIndex);
+  if(!rows || rows.length === 0) return;
+  const isHidden = rows[0].style.display === "none";
+  rows.forEach(r => r.style.display = isHidden ? "table-row" : "none");
+  btn.textContent = isHidden ? "Hide" : "Show";
+}
+
+function updateSubItems(){
+  const mainCategory = document.getElementById("saleMainItem").value;
+  const subSelect = document.getElementById("saleSubItem");
+  subSelect.innerHTML = '<option value="">Select Sub Item</option>';
+  const filtered = items.filter(it => it.category === mainCategory);
+  filtered.forEach(it => subSelect.insertAdjacentHTML("beforeend", `<option value="${it.name}">${it.name}</option>`));
+}
+function recordSale(){
+  const itemName = document.getElementById("saleSubItem").value;
+  const shop = document.getElementById("saleShopkeeper").value.trim();
+  const qty = +document.getElementById("saleQty").value;
+  if(!itemName || !shop || qty <= 0) return alert("Fill all fields");
+  const item = items.find(i => i.name === itemName);
+  if(!item) return alert("Item not found");
+  if(qty > item.stock) return alert("Not enough stock");
+  const amount = item.salePrice * qty;
+  const profit = (item.salePrice - item.buyPrice) * qty;
+  item.stock -= qty;
+  const d = new Date().toLocaleDateString("en-GB");
+
+  let existing = sales.find(s => s.shopkeeper === shop);
+  if(existing){
+    existing.qty += qty;
+    existing.amount = +(existing.amount + amount).toFixed(2);
+    existing.profit = +(existing.profit + profit).toFixed(2);
+    existing.items.push({ name:itemName, qty, price:item.salePrice, amount, profit, date:d });
+  } else {
+    sales.push({ shopkeeper: shop, qty, amount:+amount.toFixed(2), profit:+profit.toFixed(2), date: d, items:[{ name:itemName, qty, price:item.salePrice, amount:+amount.toFixed(2), profit:+profit.toFixed(2), date:d }]});
+  }
+
+  safeSet(KEY_ITEMS, items);
+  safeSet(KEY_SALES, sales);
+  renderItems(); renderSales(); renderProfit();
+
+  document.getElementById("saleQty").value = "";
+  document.getElementById("saleShopkeeper").value = "";
+}
+function renderSales(){
+  const tbody = document.getElementById("salesTable");
+  tbody.innerHTML = "";
+  sales.forEach((s,i) => {
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr style="background:#eaf4ff; font-weight:bold;">
+        <td colspan="2">${s.shopkeeper}</td>
+        <td>${s.qty}</td>
+        <td>-</td>
+        <td>${s.amount}</td>
+        <td>${s.profit}</td>
+        <td>${s.date}</td>
+        <td>
+          <button class="btn btn-info" onclick="toggleDetails(${i})" id="toggleBtn${i}">Show</button>
+          <button class="btn btn-warning" onclick="moveToOld(${i})">Move to Old</button>
+          <button class="btn btn-danger" onclick="deleteSale(${i})">Delete All</button>
+        </td>
+      </tr>
+    `);
+    s.items.forEach((it,j) => {
+      tbody.insertAdjacentHTML("beforeend", `
+        <tr class="detailRow detail-${i}" style="display:none;">
+          <td>${it.name}</td>
+          <td>${s.shopkeeper}</td>
+          <td>${it.qty}</td>
+          <td>${it.price}</td>
+          <td>${it.amount}</td>
+          <td>${it.profit}</td>
+          <td>${it.date}</td>
+          <td>
+            <button class="btn btn-edit" onclick="editSale(${i}, ${j})">Edit</button>
+            <button class="btn btn-danger" onclick="deleteItemSale(${i}, ${j})">Delete</button>
+          </td>
+        </tr>
+      `);
+    });
+  });
+}
+function toggleDetails(index){
+  const rows = document.querySelectorAll(".detail-" + index);
+  const btn = document.getElementById("toggleBtn" + index);
+  if(!rows || rows.length === 0) return;
+  const isHidden = rows[0].style.display === "none";
+  rows.forEach(r => r.style.display = isHidden ? "table-row" : "none");
+  if(btn) btn.textContent = isHidden ? "Hide" : "Show";
+}
+function editSale(shopIndex, itemIndex){
+  const s = sales[shopIndex];
+  const it = s.items[itemIndex];
+  const newQtyRaw = prompt("Edit Quantity:", it.qty);
+  if(newQtyRaw === null) return;
+  const newQty = +newQtyRaw;
+  if(isNaN(newQty) || newQty <= 0) return alert("Invalid quantity");
+
+  const itemObj = items.find(i => i.name === it.name);
+  if(!itemObj) return alert("Item not found in inventory");
+
+
+  itemObj.stock += it.qty;
+  if(newQty > itemObj.stock) {
+
+    itemObj.stock -= it.qty;
+    return alert("Not enough stock available");
+  }
+
+  itemObj.stock -= newQty;
+
+  it.qty = newQty;
+  it.amount = +(it.price * newQty).toFixed(2);
+  it.profit = +((it.price - itemObj.buyPrice) * newQty).toFixed(2);
+
+
+  s.qty = s.items.reduce((a,b)=> a + b.qty, 0);
+  s.amount = +(s.items.reduce((a,b)=> a + b.amount, 0)).toFixed(2);
+  s.profit = +(s.items.reduce((a,b)=> a + b.profit, 0)).toFixed(2);
+
+  safeSet(KEY_ITEMS, items);
+  safeSet(KEY_SALES, sales);
+  renderItems(); renderSales(); renderProfit();
+}
+function deleteItemSale(shopIndex, itemIndex){
+  if(!confirm("Delete this sale item?")) return;
+  const s = sales[shopIndex];
+  const it = s.items[itemIndex];
+  const itemObj = items.find(i => i.name === it.name);
+  if(itemObj) itemObj.stock += it.qty;
+  s.items.splice(itemIndex,1);
+  if(s.items.length === 0) sales.splice(shopIndex,1);
+  else {
+    s.qty = s.items.reduce((a,b)=> a + b.qty, 0);
+    s.amount = +(s.items.reduce((a,b)=> a + b.amount, 0)).toFixed(2);
+    s.profit = +(s.items.reduce((a,b)=> a + b.profit, 0)).toFixed(2);
+  }
+  safeSet(KEY_ITEMS, items);
+  safeSet(KEY_SALES, sales);
+  renderItems(); renderSales(); renderProfit();
+}
+function deleteSale(shopIndex){
+  if(!confirm("Delete ALL sales of this shopkeeper?")) return;
+  const s = sales[shopIndex];
+  s.items.forEach(it => {
+    const itemObj = items.find(i => i.name === it.name);
+    if(itemObj) itemObj.stock += it.qty;
+  });
+  sales.splice(shopIndex,1);
+  safeSet(KEY_ITEMS, items);
+  safeSet(KEY_SALES, sales);
+  renderItems(); renderSales(); renderProfit();
+}
+
+
+function moveToOld(index){
+  if(!confirm("Move this sale to Old Details?")) return;
+  const s = sales[index];
+
+  s.items = s.items.map(it => {
+    const itemObj = items.find(i => i.name === it.name);
+    return { ...it, category: itemObj ? itemObj.category : "Unknown" };
+  });
+  oldSales.push(s);
+  safeSet(KEY_OLDSALES, oldSales);
+  sales.splice(index,1);
+  safeSet(KEY_SALES, sales);
+  renderSales(); renderProfit();
+}
+
+function renderOrders(){
+  
+  const tbody = document.getElementById("ordersTable");
+  tbody.innerHTML = "";
+  orders.forEach((o,i) => {
+    if(o.visibleToAdmin === false) return;
+    tbody.insertAdjacentHTML("beforeend", `
+      <tr>
+        <td>${o.user}</td>
+        <td>${o.message}</td>
+        <td>${o.status}</td>
+        <td>${o.date}</td>
+        <td>${o.adminMessage || ""}</td>
+        <td>
+          <button class="btn btn-edit" onclick="editOrder(${i})">Edit</button>
+          <button class="btn btn-success" onclick="approveOrder(${i})">Approve</button>
+          <button class="btn btn-danger" onclick="deleteOrderAdmin(${i})">Delete</button>
+        </td>
+      </tr>
+    `);
+  });
+}
+function editOrder(i){
+  const o = orders[i];
+  const newMsg = prompt("Edit user order:", o.message);
+  if(newMsg === null) return;
+  o.message = newMsg;
+  o.adminMessage = "✏️ Your order has been updated by admin!";
+  safeSet(KEY_ORDERS, orders);
+  renderOrders(); renderUserOrders();
+}
+function approveOrder(i){
+  orders[i].status = "approved";
+  orders[i].adminMessage = "✅ Your order has been approved by admin!";
+  safeSet(KEY_ORDERS, orders);
+  renderOrders(); renderUserOrders();
+}
+function deleteOrderAdmin(i){
+  orders[i].visibleToAdmin = false;
+  safeSet(KEY_ORDERS, orders);
+  renderOrders();
+}
+function deleteOrderUser(i){
+  orders[i].visibleToUser = false;
+  safeSet(KEY_ORDERS, orders);
+  renderUserOrders();
+}
+function placeOrder(){
+  if(!currentUser || !currentUser.email) return alert("Login first");
+  const msg = document.getElementById("orderMessage").value.trim();
+  if(!msg) return alert("Type your order");
+  const d = new Date().toLocaleDateString("en-GB");
+  orders.push({ user: currentUser.email, message: msg, date: d, status: "pending", adminMessage: "", visibleToAdmin:true, visibleToUser:true });
+  safeSet(KEY_ORDERS, orders);
+  renderUserOrders(); renderOrders();
+  document.getElementById("orderMessage").value = "";
+}
+function renderUserOrders(){
+  const tbody = document.getElementById("userOrdersTable");
+  tbody.innerHTML = "";
+  orders.forEach((o,i) => {
+    if(o.user !== currentUser.email || o.visibleToUser === false) return;
+    tbody.insertAdjacentHTML("beforeend", `<tr>
+      <td>${o.message}</td><td>${o.status}</td><td>${o.date}</td><td>${o.adminMessage||""}</td>
+      <td><button class="btn btn-danger" onclick="deleteOrderUser(${i})">Delete</button></td>
+    </tr>`);
+  });
+}
+
+let mediaRecorder = null;
+let recChunks = [];
+let lastRecordedBlob = null;
+
+const recordBtn = document.getElementById("recordBtn");
+const recStatus = document.getElementById("recStatus");
+
+recordBtn.addEventListener("mousedown", startRecording);
+recordBtn.addEventListener("touchstart", startRecording);
+recordBtn.addEventListener("mouseup", stopRecordingAndStore);
+recordBtn.addEventListener("touchend", stopRecordingAndStore);
+
+function startRecording(e){
+  e.preventDefault();
+  const userName = document.getElementById("userNameInput").value.trim();
+  if(!currentUser) return alert("Login first to record voice.");
+  if(!userName) return alert("Enter your name before sending voice!");
+  
+  navigator.mediaDevices.getUserMedia({ audio: true })
+    .then(stream => {
+      recChunks = [];
+      mediaRecorder = new MediaRecorder(stream);
+      mediaRecorder.ondataavailable = ev => {
+        if(ev.data && ev.data.size > 0) recChunks.push(ev.data);
+      };
+      mediaRecorder.start();
+      recStatus.textContent = "Recording...";
+    })
+    .catch(err => alert("Cannot access microphone: " + err.message));
+}
+
+function stopRecordingAndStore(e){
+  e.preventDefault();
+  if(mediaRecorder && mediaRecorder.state !== "inactive"){
+    mediaRecorder.onstop = () => {
+      lastRecordedBlob = new Blob(recChunks, { type: 'audio/webm' });
+      renderUserVoicesPreview();
+    };
+    mediaRecorder.stop();
+    recStatus.textContent = "Recording stopped.";
+  } else {
+    recStatus.textContent = "No active recording.";
+  }
+}
+
+function sendVoice(){
+  if(!lastRecordedBlob) return alert("Record a voice first then send.");
+  const userName = document.getElementById("userNameInput").value.trim();
+  if(!userName) return alert("Enter your name before sending!");
+
+  const reader = new FileReader();
+  reader.onloadend = () => {
+    const base64 = reader.result;
+    const entry = {
+      from: currentUser.email,
+      name: userName,
+      audio: base64,
+      date: new Date().toLocaleString(),
+      visibleToAdmin: true,
+      visibleToUser: true
+    };
+    voices.push(entry);
+    safeSet(KEY_VOICES, voices);
+    lastRecordedBlob = null;
+    recStatus.textContent = "Voice sent!";
+    renderUserVoicesPreview();
+    renderVoicesAdmin();
+    alert("Voice message sent to admin!");
+  };
+  reader.readAsDataURL(lastRecordedBlob);
+}
+
+function renderUserVoicesPreview(){
+  const area = document.getElementById("voicesAreaUser");
+  area.innerHTML = "";
+
+  if(lastRecordedBlob){
+    const url = URL.createObjectURL(lastRecordedBlob);
+    area.innerHTML = `<div class="voice-item"><b>Preview</b><br>
+      <audio controls src="${url}"></audio>
+      <div style="margin-top:6px;">
+        <button class="btn btn-success" onclick="sendVoice()">Send to Admin</button>
+      </div>
+    </div>`;
+  }
+
+  const userVoices = voices.filter(v => v.from === currentUser.email && v.visibleToUser);
+  userVoices.forEach(v => {
+    area.insertAdjacentHTML("beforeend", `
+      <div class="voice-item">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <div><b>${v.name}</b> &nbsp; <small style="color:#666">${v.date}</small></div>
+          <div>
+            <button class="btn btn-danger" onclick="deleteUserVoice('${v.date}', '${v.from}')">Delete</button>
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <audio controls src="${v.audio}"></audio>
+        </div>
+      </div>
+    `);
+  });
+
+  if(!lastRecordedBlob && userVoices.length === 0){
+    area.innerHTML = "<div style='color:#666'>No recorded voice yet.</div>";
+  }
+}
+
+function deleteUserVoice(date, from){
+  if(!confirm("Delete your voice message?")) return;
+  voices.forEach(v => {
+    if(v.date === date && v.from === from){
+      v.visibleToUser = false;
+    }
+  });
+  safeSet(KEY_VOICES, voices);
+  renderUserVoicesPreview();
+}
+
+function renderVoicesAdmin(){
+  const area = document.getElementById("voicesAreaAdmin");
+  area.innerHTML = "";
+  if(!voices || voices.length === 0){
+    area.innerHTML = "<div style='color:#666'>No voice messages yet.</div>";
+    return;
+  }
+
+  voices.slice().reverse().forEach(v => {
+    if(!v.visibleToAdmin) return;
+    area.insertAdjacentHTML("beforeend", `
+      <div class="voice-item">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <div><b>${v.name} (${v.from})</b> &nbsp; <small style="color:#666">${v.date}</small></div>
+          <div>
+            <button class="btn btn-danger" onclick="deleteAdminVoice('${v.date}', '${v.from}')">Delete</button>
+          </div>
+        </div>
+        <div style="margin-top:8px;">
+          <audio controls src="${v.audio}"></audio>
+        </div>
+      </div>
+    `);
+  });
+}
+
+function deleteAdminVoice(date, from){
+  if(!confirm("Delete this voice message for admin?")) return;
+  voices.forEach(v => {
+    if(v.date === date && v.from === from){
+      v.visibleToAdmin = false;
+    }
+  });
+  safeSet(KEY_VOICES, voices);
+  renderVoicesAdmin();
+}
+
+/* ---------- MISC (profit placeholder) ---------- */
+function renderProfit(){
+  // optional: compute and show profit summary if you want.
+  // kept minimal to avoid missing element errors
+}
+
+function renderAll(){
+  renderItems();
+  renderSales();
+  renderOrders();
+  renderUserOrders();
+  updateSubItems();
+  renderProfit();
+
+  renderUserVoicesPreview();
+  renderVoicesAdmin();
+}
+
+window.onload = () => {
+
+  users = safeGet(KEY_USERS);
+  items = safeGet(KEY_ITEMS);
+  sales = safeGet(KEY_SALES);
+  returnsArr = safeGet(KEY_RETURNS);
+  orders = safeGet(KEY_ORDERS);
+  oldSales = safeGet(KEY_OLDSALES);
+  voices = safeGet(KEY_VOICES);
+
+  const logged = localStorage.getItem(KEY_LOGGED);
+  const curEmail = localStorage.getItem(KEY_CURUSER);
+
+  if (logged === "true" && curEmail) {
+    if (curEmail === "teapak@gmail.com") {
+      currentUser = { email: "teapak@gmail.com", role: "admin" };
+    } else {
+      currentUser = users.find(u => u.email === curEmail) || null;
+    }
+    if (currentUser) {
+      showApp();
+    } else {
+      showLogin();
+    }
+  } else {
+    showLogin();
+  }
+};
+</script>
+</body>
+</html>
